@@ -1,9 +1,49 @@
-import json
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.generic.base import TemplateView
+from chartjs.views.lines import BaseLineOptionsChartView
+import chat_replay_downloader
+from django.core import serializers
+from . import models
 
-class index(TemplateView):
-    template_name = "chart.html"
-def test(req):
-    return HttpResponse(json.dumps({"10:00 PM": 1, "11:00 PM": 10}))
+class LineChartJSONView(BaseLineOptionsChartView):
+    def __init__(self):
+        d = chat_replay_downloader.sites.youtube.YouTubeChatDownloader()
+        self.messages = d.get_chat_messages({"url":self.kwargs["ytid"]})
+        data = serializers.serialize("json", models.StreamComments.objects.all())
+
+    def get_options(self):
+        """Return options"""
+        return {
+            "responsive": False,
+            "title": {
+                "display": True,
+                "text": f"Data for {self.kwargs['ytid']}"
+            },
+            "scales": {
+                "xAxes": [{
+                    "type": "time",
+                    "time": {
+                        "parser": "h:mm a"
+                    }
+                }],
+                "yAxes": [{
+                    "scaleLabel": {
+                        "display": True,
+                        "labelString": "comments"
+                    }
+                }]
+            }
+        }
+
+    def get_labels(self):
+        """Return 7 labels for the x-axis."""
+        return ["1:00 AM", "1:01 AM", "1:02 AM", "1:03 AM", "1:04 AM", "1:05 AM", "1:06 AM"]
+
+    def get_providers(self):
+        """Return names of datasets."""
+        return [self.kwargs["ytid"], "kw0", "kw1", "kw2"]
+
+    def get_data(self):
+        """Return 3 datasets to plot."""
+
+        return [[75, 44, 92, 11, 44, 95, 35],
+                [41, 92, 18, 3, 73, 87, 92],
+                [87, 21, 94, 3, 90, 13, 65]]
