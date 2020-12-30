@@ -17,13 +17,13 @@ class LineChartJSONView(BaseLineOptionsChartView):
             "responsive": False,
             "title": {
                 "display": True,
-                "text": f"Data for {self.kwargs['ytid']}"
+                "text": f"Data for {self.stream.channel.avatar} {self.stream.title}"
             },
             "scales": {
                 "xAxes": [{
                     "type": "time",
                     "time": {
-                        "parser": "h:mm a"
+                        "parser": "x"  # Unix ms timestamp
                     }
                 }],
                 "yAxes": [{
