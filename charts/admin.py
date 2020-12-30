@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from charts.models import Channel, Stream, StreamComment
+
+admin.site.register(Channel)
+admin.site.register(Stream)
+admin.site.register(StreamComment)
