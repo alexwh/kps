@@ -1,13 +1,15 @@
 from chartjs.views.lines import BaseLineOptionsChartView
-import chat_replay_downloader
 from django.core import serializers
+from django.shortcuts import get_object_or_404
 from . import models
 
 class LineChartJSONView(BaseLineOptionsChartView):
     def __init__(self):
-        d = chat_replay_downloader.sites.youtube.YouTubeChatDownloader()
-        self.messages = d.get_chat_messages({"url":self.kwargs["ytid"]})
-        data = serializers.serialize("json", models.StreamComments.objects.all())
+        self.stream = get_object_or_404(models.Stream, pk="qhx65-hjJOs")
+        # self.stream.streamcomments_set.all()
+        # d = chat_replay_downloader.sites.youtube.YouTubeChatDownloader()
+        # self.messages = d.get_chat_messages({"url":self.kwargs["ytid"]})
+        # data = serializers.serialize("json", models.StreamComments.objects.all())
 
     def get_options(self):
         """Return options"""
