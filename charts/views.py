@@ -32,6 +32,18 @@ class LineChartJSONView(BaseLineOptionsChartView):
                         "labelString": "comments"
                     }
                 }]
+            },
+            "plugins": {
+                "zoom": {
+                    "pan": {
+                        "enabled": True,
+                        "mode": "xy"
+                    },
+                    "zoom": {
+                        "enabled": True,
+                        "mode": "xy",
+                    }
+                }
             }
         }
 
