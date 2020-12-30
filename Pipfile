@@ -4,10 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pytchat = "*"
 django = "*"
 django-q = "*"
 django-chartjs = "*"
+chat-replay-downloader = {editable = true, ref = "package", git = "https://github.com/xenova/chat-replay-downloader"}
+isodate = "*"
 
 [dev-packages]
 
