@@ -1,6 +1,6 @@
 from django.db import models
 
-class CommentAuthor(models.Model):
+class Channel(models.Model):
     userid = models.CharField(max_length=24, primary_key=True, unique=True)
     avatar = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
@@ -17,7 +17,7 @@ class StreamComment(models.Model):
     message_type = models.CharField(max_length=50)
 
     stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
-    author = models.ForeignKey(CommentAuthor, on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
 
     timestamp = models.DateTimeField()
     action_type = models.CharField(max_length=50)
