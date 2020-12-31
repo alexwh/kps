@@ -4,7 +4,7 @@ from . import models, util
 
 class LineChartJSONView(BaseLineOptionsChartView):
     def dispatch(self, request, *args, **kwargs):
-        self.stream = get_object_or_404(models.Stream, pk=self.kwargs["ytid"])
+        self.stream = get_object_or_404(models.Stream, stream_id=self.kwargs["ytid"])
         self.comments = self.stream.comments.all()
         self.start_date = self.comments[0].timestamp.replace(second=0, microsecond=0)
         self.end_date = self.comments[len(self.comments) - 1].timestamp.replace(second=0, microsecond=0)  # negative index not supported
