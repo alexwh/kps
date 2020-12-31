@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7cba718982ffa749173ebdddfb57b8b5b65fceea92287d2529bcc346d672a613"
+            "sha256": "6c4e400ebf83b85645b5d4fb9693293d75a9cb6950ce0ec97c69e874e592fef7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -78,7 +78,7 @@
         "chat-replay-downloader": {
             "editable": true,
             "git": "https://github.com/xenova/chat-replay-downloader",
-            "ref": "0776004970ac0b1ba707f0e381282af4f2c04887"
+            "ref": "8859a25b9827f1a03da95162ad6aac2a10f055b2"
         },
         "datetime": {
             "hashes": [
@@ -94,6 +94,15 @@
             ],
             "index": "pypi",
             "version": "==3.1.4"
+        },
+        "django-channels": {
+            "hashes": [
+                "sha256:06812bda257e7b5e9786b1c205bede9ab7bd2864689ed5dc64b549086b3d3a33",
+                "sha256:c8bc623df4a7828c2e5ea453d0d0f066ff9b71b8c7c1a58b2f7fa86bc0bd619e",
+                "sha256:ceb5675ed0133bd54cc0529eb76157cc3b9ab67aceba7293ee5ac2fe4126987b"
+            ],
+            "index": "pypi",
+            "version": "==0.7.0"
         },
         "django-chartjs": {
             "hashes": [
@@ -140,6 +149,14 @@
             ],
             "index": "pypi",
             "version": "==0.6.0"
+        },
+        "oauthlib": {
+            "hashes": [
+                "sha256:bee41cc35fcca6e988463cacc3bcb8a96224f470ca547e697b604cc697b2f889",
+                "sha256:df884cd6cbe20e32633f1db1072e9356f53638e4361bef4e8b03c9127c9328ea"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==3.1.0"
         },
         "python-dateutil": {
             "hashes": [
@@ -209,6 +226,14 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
             "version": "==2.25.1"
+        },
+        "requests-oauthlib": {
+            "hashes": [
+                "sha256:7f71572defaecd16372f9006f33c2ec8c077c3cfa6f5911a9a90202beb513f3d",
+                "sha256:b4261601a71fd721a8bd6d7aa1cc1d6a8a93b4a9f5e96626f8e4d91e8beeaa6a",
+                "sha256:fa6c47b933f01060936d87ae9327fead68768b69c6c9ea2109c48be30f2d4dbc"
+            ],
+            "version": "==1.3.0"
         },
         "six": {
             "hashes": [
