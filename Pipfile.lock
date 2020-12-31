@@ -62,26 +62,12 @@
             ],
             "version": "==20.2.0"
         },
-        "beautifulsoup4": {
-            "hashes": [
-                "sha256:4c98143716ef1cb40bf7f39a8e3eec8f8b009509e74904ba3a7b315431577e35",
-                "sha256:84729e322ad1d5b4d25f805bfa05b902dd96450f43842c4e99067d5e1369eb25",
-                "sha256:fff47e031e34ec82bf17e00da8f592fe7de69aeea38be00523c04623c04fb666"
-            ],
-            "version": "==4.9.3"
-        },
         "blessed": {
             "hashes": [
                 "sha256:0a74a8d3f0366db600d061273df77d44f0db07daade7bb7a4d49c8bc22ed9f74",
                 "sha256:580429e7e0c6f6a42ea81b0ae5a4993b6205c6ccbb635d034b4277af8175753e"
             ],
             "version": "==1.17.12"
-        },
-        "bs4": {
-            "hashes": [
-                "sha256:36ecea1fd7cc5c0c6e4a1ff075df26d50da647b75376626cc186e2212886dd3a"
-            ],
-            "version": "==0.0.1"
         },
         "certifi": {
             "hashes": [
@@ -150,7 +136,7 @@
         "chat-replay-downloader": {
             "editable": true,
             "git": "https://github.com/xenova/chat-replay-downloader",
-            "ref": "8859a25b9827f1a03da95162ad6aac2a10f055b2"
+            "ref": "403d90795b0729fa6fbb6544a90b12ccca2d9d11"
         },
         "constantly": {
             "hashes": [
@@ -405,14 +391,6 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.15.0"
-        },
-        "soupsieve": {
-            "hashes": [
-                "sha256:4bb21a6ee4707bf43b61230e80740e71bfe56e55d1f1f50924b087bb2975c851",
-                "sha256:6dc52924dc0bc710a5d16794e6b3480b2c7c08b07729505feab2b2c16661ff6e"
-            ],
-            "markers": "python_version >= '3'",
-            "version": "==2.1"
         },
         "sqlparse": {
             "hashes": [
