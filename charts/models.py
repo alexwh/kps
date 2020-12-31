@@ -17,7 +17,7 @@ class StreamComment(models.Model):
     message = models.CharField(max_length=200)
     message_type = models.CharField(max_length=50)
 
-    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
+    stream = models.ForeignKey(Stream, on_delete=models.CASCADE, related_name="comments")
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
 
     timestamp = models.DateTimeField()
