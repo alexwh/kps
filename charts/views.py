@@ -1,18 +1,52 @@
 from chartjs.views.lines import BaseLineOptionsChartView
-from django.core import serializers
 from django.shortcuts import get_object_or_404
-from . import models
+from . import models, util
 
 class LineChartJSONView(BaseLineOptionsChartView):
-    def __init__(self):
-        self.stream = get_object_or_404(models.Stream, pk="qhx65-hjJOs")
-        # self.stream.streamcomments_set.all()
+    def dispatch(self, request, *args, **kwargs):
+        self.stream = get_object_or_404(models.Stream, pk=self.kwargs["ytid"])
+        self.comments = self.stream.comments.all()
+        self.start_date = self.comments[0].timestamp
+        self.end_date = self.comments[len(self.comments) - 1].timestamp  # negative index not supported
+        self.keywords = self.request.GET.getlist("keywords[]")
+        print(self.keywords)
         # d = chat_replay_downloader.sites.youtube.YouTubeChatDownloader()
         # self.messages = d.get_chat_messages({"url":self.kwargs["ytid"]})
-        # data = serializers.serialize("json", models.StreamComments.objects.all())
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_labels(self):
+        """Return labels in 1 minute intervals between the first and last comment"""
+        return [dt for dt in util.datetime_range(self.start_date, self.end_date)]
+
+    def get_providers(self):
+        """Return the overall message rate and any extra search queries"""
+        providers = [self.stream.title]
+        if self.keywords:
+            for keyword in self.keywords:
+                providers.append(keyword)
+        return providers
+
+    def get_data(self):
+        """Return overall messages and any extra queries as datasets"""
+        data = []
+        data.append([  # overall messages
+            item
+            for item in util.value_or_null(
+                self.start_date, self.end_date, self.comments, "timestamp"
+            )
+        ])
+        for keyword in self.keywords:
+            data.append([
+                item
+                for item in util.value_or_null(
+                    self.start_date, self.end_date, self.comments, "timestamp", "message", keyword
+                )
+            ])
+        return data
 
     def get_options(self):
         """Return options"""
+
         return {
             "responsive": False,
             "title": {
@@ -22,9 +56,10 @@ class LineChartJSONView(BaseLineOptionsChartView):
             "scales": {
                 "xAxes": [{
                     "type": "time",
-                    "time": {
-                        "parser": "x"  # Unix ms timestamp
-                    }
+                    "distribution": "series",
+                    # "time": {
+                    #     "parser": "x"  # Unix ms timestamp
+                    # }
                 }],
                 "yAxes": [{
                     "scaleLabel": {
@@ -46,18 +81,3 @@ class LineChartJSONView(BaseLineOptionsChartView):
                 }
             }
         }
-
-    def get_labels(self):
-        """Return 7 labels for the x-axis."""
-        return ["1:00 AM", "1:01 AM", "1:02 AM", "1:03 AM", "1:04 AM", "1:05 AM", "1:06 AM"]
-
-    def get_providers(self):
-        """Return names of datasets."""
-        return [self.kwargs["ytid"], "kw0", "kw1", "kw2"]
-
-    def get_data(self):
-        """Return 3 datasets to plot."""
-
-        return [[75, 44, 92, 11, 44, 95, 35],
-                [41, 92, 18, 3, 73, 87, 92],
-                [87, 21, 94, 3, 90, 13, 65]]

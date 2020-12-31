@@ -11,16 +11,47 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.js" integrity="sha512-zO8oeHCxetPn1Hd9PdDleg5Tw1bAaP0YmNvPY8CwcRyUk7d7/+nyElmFrB6f7vg4f7Fv4sui1mcep8RIEShczg==" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7/dist/chartjs-plugin-zoom.min.js" integrity="sha256-6S7w9Wue7EBvlJh/Li/cPecjTNN+yBm/AoCePQA9Xi8=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js" integrity="sha256-eVNjHw5UeU0jUqPPpZHAkU1z4U+QFBBY488WvueTm88=" crossorigin="anonymous"></script>
+    <style>
+        #template {
+            display:none;
+        }
+    </style>
     </head>
     <body>
-        <canvas id="myChart" width="800" height="600"></canvas>
+        <div id="controls">
+            <input id="ytid" value="qhx65-hjJOs"></input>
+            <button id="add_template">add template keyword</button>
+            <button id="get_the_goods">go</button>
+            <div id="kw_container">
+                <input id="template"></input>
+            </div>
+        </div>
+        <div id="charts">
+            <canvas id="myChart" width="800" height="600"></canvas>
+        </div>
         <script type="text/javascript">
-            $.get('{% url "line_chart_json" "test" %}', function(resp) {
-                var ctx = $("#myChart").get(0).getContext("2d");
-                new Chart(ctx, {
-                    type: 'line', data: resp.data, options: resp.options
+            $("#get_the_goods").on("click", function(event) {
+                event.preventDefault();
+                keyword_elements = $(".keywords")
+                var keywords = [];
+                $.each(keyword_elements, function(k, v) {
+                    keywords.push(v.value);
+                    console.log(k, v);
+                })
+                $.get('/cinfo/' + $("#ytid").val() + ".json", {"keywords": keywords}, function(resp) {
+                    var ctx = $("#myChart").get(0).getContext("2d");
+                    new Chart(ctx, {
+                        type: 'line', data: resp.data, options: resp.options
+                    });
                 });
-            });
+            })
+            $("#add_template").on("click", function(event) {
+                event.preventDefault();
+                let kw = $("#template").clone();
+                kw.removeAttr("id");
+                kw.addClass("keywords");
+                $("#kw_container").append(kw);
+            })
         </script>
     </body>
 </html>
