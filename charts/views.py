@@ -6,8 +6,8 @@ class LineChartJSONView(BaseLineOptionsChartView):
     def dispatch(self, request, *args, **kwargs):
         self.stream = get_object_or_404(models.Stream, pk=self.kwargs["ytid"])
         self.comments = self.stream.comments.all()
-        self.start_date = self.comments[0].timestamp
-        self.end_date = self.comments[len(self.comments) - 1].timestamp  # negative index not supported
+        self.start_date = self.comments[0].timestamp.replace(second=0, microsecond=0)
+        self.end_date = self.comments[len(self.comments) - 1].timestamp.replace(second=0, microsecond=0)  # negative index not supported
         self.keywords = self.request.GET.getlist("keywords[]")
         return super().dispatch(request, *args, **kwargs)
 
