@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'channels',
     'chartjs',
+    'django_q',
     'charts',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -123,3 +124,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 ASGI_APPLICATION = 'kps.asgi.application'
+
+Q_CLUSTER = {
+    'orm': 'default',
+    'bulk': 10
+}

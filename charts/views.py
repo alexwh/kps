@@ -9,9 +9,6 @@ class LineChartJSONView(BaseLineOptionsChartView):
         self.start_date = self.comments[0].timestamp
         self.end_date = self.comments[len(self.comments) - 1].timestamp  # negative index not supported
         self.keywords = self.request.GET.getlist("keywords[]")
-        print(self.keywords)
-        # d = chat_replay_downloader.sites.youtube.YouTubeChatDownloader()
-        # self.messages = d.get_chat_messages({"url":self.kwargs["ytid"]})
         return super().dispatch(request, *args, **kwargs)
 
     def get_labels(self):
