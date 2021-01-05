@@ -1,29 +1,47 @@
+from functools import lru_cache
 from datetime import datetime, timedelta, timezone
 import chat_replay_downloader
+import environ
+import googleapiclient.discovery
 from . import models
 
+@lru_cache()
+def fetch_video_info(ytid):
+    env = environ.Env(
+        DEBUG=(bool, False)
+    )
+    google_api_key = env("GOOGLE_API_KEY")
+    youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=google_api_key)
+
+    request = youtube.videos().list(
+        part="snippet",
+        id=ytid
+    )
+    response = request.execute()
+    video = response["items"][0]["snippet"]
+    channel_id = video["channelId"]
+    title = video["title"]
+    description = video["description"]
+    thumbnail = video["thumbnails"]["maxres"]["url"]
+
+    return channel_id, title, description, thumbnail
+
+
 def fetch_comments_ytid(user, ytid):
-    # channel_user_id =
-    channel, _ = models.Channel.objects.get_or_create(user_id="nieuseridlasijdal")
-    stream, _ = models.Stream.objects.get_or_create(stream_id=ytid, channel=channel)
+    channel_id, title, description, thumbnail = fetch_video_info(ytid)
+    channel, _ = models.Channel.objects.get_or_create(user_id=channel_id)
+    stream, _ = models.Stream.objects.get_or_create(
+        stream_id=ytid,
+        channel=channel,
+        title=title,
+        description=description,
+        thumbnail=thumbnail)
 
     ytc_dl = chat_replay_downloader.sites.youtube.YouTubeChatDownloader()
     msgs = ytc_dl.get_chat_messages({
         "url": ytid,
         "message_groups": ["messages", "superchat"],
-        "pause_on_error": True,  # remove later
     })
-
-    # commented because we're filtering manually, may need if switching JSONFields
-    # for msg in msgs:
-    #     # these are over 50% of the json length and are useless to us
-    #     # might be better to monkeypatch chat-replay-downloader's remapping
-    #     # functionality to just return none on parse_badges and get_thumbnails
-    #     # (sites/youtube.py#_REMAPPING)
-    #     if msg["author"]["badges"]:
-    #         del msg["author"]["badges"]
-    #     if msg["author"]["images"]:
-    #         del msg["author"]["images"]
 
     comments = []
     for msg in msgs:
