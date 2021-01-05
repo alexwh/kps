@@ -6,30 +6,46 @@ import googleapiclient.discovery
 from . import models
 
 @lru_cache()
-def fetch_video_info(ytid):
+def fetch_info(resource, ytid):
     env = environ.Env(
         DEBUG=(bool, False)
     )
     google_api_key = env("GOOGLE_API_KEY")
     youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=google_api_key)
 
-    request = youtube.videos().list(
-        part="snippet",
-        id=ytid
-    )
-    response = request.execute()
-    video = response["items"][0]["snippet"]
-    channel_id = video["channelId"]
-    title = video["title"]
-    description = video["description"]
-    thumbnail = video["thumbnails"]["maxres"]["url"]
+    if resource == "videos":
+        request = youtube.videos().list(
+            part="snippet",
+            id=ytid
+        )
+        response = request.execute()
+        video = response["items"][0]["snippet"]
+        channel_id = video["channelId"]
+        title = video["title"]
+        description = video["description"]
+        thumbnail = video["thumbnails"]["maxres"]["url"]
 
-    return channel_id, title, description, thumbnail
+        return channel_id, title, description, thumbnail
+    elif resource == "channels":
+        request = youtube.channels().list(
+            part="snippet",
+            id=ytid
+        )
+        response = request.execute()
+        channel = response["items"][0]["snippet"]
+        name = channel["title"]
+        avatar = channel["thumbnails"]["default"]["url"]
+
+        return name, avatar
 
 
 def fetch_comments_ytid(user, ytid):
-    channel_id, title, description, thumbnail = fetch_video_info(ytid)
-    channel, _ = models.Channel.objects.get_or_create(user_id=channel_id)
+    channel_id, title, description, thumbnail = fetch_info("videos", ytid)
+    channel_name, channel_avatar = fetch_info("channels", channel_id)
+    channel, _ = models.Channel.objects.get_or_create(
+        user_id=channel_id,
+        name=channel_name,
+        avatar=channel_avatar)
     stream, _ = models.Stream.objects.get_or_create(
         stream_id=ytid,
         channel=channel,
