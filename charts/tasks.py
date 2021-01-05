@@ -72,14 +72,17 @@ def fetch_comments_ytid(user, ytid):
             "name":    msg["author"]["name"]
         }
         msg_channel, _ = models.Channel.objects.get_or_create(**cinfo)
-        comments.append(models.StreamComment(
-            message_id=msg["message_id"],
-            message=msg["message"],
-            stream=stream,
-            channel=msg_channel,
-            timestamp=datetime.fromtimestamp(int(msg["timestamp"]) / 1000000.0, tz=timezone.utc),
-            # this could cause issues with negatives - python timedelta
-            # represents them as -1 days and (day seconds) - time_in_seconds
-            relative_time=timedelta(seconds=int(msg["time_in_seconds"])),
-        ))
+        try:
+            comments.append(models.StreamComment(
+                message_id=msg["message_id"],
+                message=msg["message"],
+                stream=stream,
+                channel=msg_channel,
+                timestamp=datetime.fromtimestamp(int(msg["timestamp"]) / 1000000.0, tz=timezone.utc),
+                # this could cause issues with negatives - python timedelta
+                # represents them as -1 days and (day seconds) - time_in_seconds
+                relative_time=timedelta(seconds=int(msg["time_in_seconds"])),
+            ))
+        except KeyError:
+            print(msg)
     models.StreamComment.objects.bulk_create(comments, ignore_conflicts=True)
