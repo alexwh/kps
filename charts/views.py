@@ -1,5 +1,6 @@
 from chartjs.views.lines import BaseLineOptionsChartView
 from django.shortcuts import get_object_or_404
+from django.views.generic import TemplateView
 from . import models, util
 
 class LineChartJSONView(BaseLineOptionsChartView):
@@ -78,3 +79,11 @@ class LineChartJSONView(BaseLineOptionsChartView):
                 }
             }
         }
+
+class IndexView(TemplateView):
+    template_name = 'line_chart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['db_streams'] = models.Stream.objects.all()
+        return context
