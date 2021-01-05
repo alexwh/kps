@@ -66,14 +66,20 @@ def fetch_comments_ytid(user, ytid):
         # hopefully there should be always at least one object, just get the
         # base url and we can add =s64/=s32 where needed to resize rather than
         # storing all representations of resizes
-        avatar = msg["author"]["images"][0]["url"].split("=")[0]
-        msg_channel, _ = models.Channel.objects.get_or_create(user_id=msg["author"]["id"], name=msg["author"]["name"], avatar=avatar)
+        cinfo = {
+            "avatar":  msg["author"]["images"][0]["url"].split("=")[0],
+            "user_id": msg["author"]["id"],
+            "name":    msg["author"]["name"]
+        }
+        msg_channel, _ = models.Channel.objects.get_or_create(**cinfo)
         comments.append(models.StreamComment(
             message_id=msg["message_id"],
             message=msg["message"],
             stream=stream,
             channel=msg_channel,
             timestamp=datetime.fromtimestamp(int(msg["timestamp"]) / 1000000.0, tz=timezone.utc),
+            # this could cause issues with negatives - python timedelta
+            # represents them as -1 days and (day seconds) - time_in_seconds
             relative_time=timedelta(seconds=int(msg["time_in_seconds"])),
         ))
     models.StreamComment.objects.bulk_create(comments, ignore_conflicts=True)
