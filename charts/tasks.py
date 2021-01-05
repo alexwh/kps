@@ -16,6 +16,7 @@ def fetch_info(resource, ytid):
     if resource == "videos":
         request = youtube.videos().list(
             part="snippet",
+            fields="items(snippet(channelId,title,description,thumbnails/default/url))",
             id=ytid
         )
         response = request.execute()
@@ -23,12 +24,13 @@ def fetch_info(resource, ytid):
         channel_id = video["channelId"]
         title = video["title"]
         description = video["description"]
-        thumbnail = video["thumbnails"]["maxres"]["url"]
+        thumbnail = video["thumbnails"]["default"]["url"]
 
         return channel_id, title, description, thumbnail
     elif resource == "channels":
         request = youtube.channels().list(
             part="snippet",
+            fields="items(snippet(title,thumbnails/default/url))",
             id=ytid
         )
         response = request.execute()
