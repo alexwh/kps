@@ -17,10 +17,10 @@ class LineChartJSONView(BaseLineOptionsChartView):
 
     def get_providers(self):
         """Return the overall message rate and any extra search queries"""
-        providers = [self.stream.title]
+        providers = ["Overall"]
         if self.keywords:
             for keyword in self.keywords:
-                providers.append(keyword)
+                providers.append(f"Keyword: {keyword}")
         return providers
 
     def get_data(self):
@@ -48,7 +48,7 @@ class LineChartJSONView(BaseLineOptionsChartView):
             "responsive": False,
             "title": {
                 "display": True,
-                "text": f"Data for {self.stream.channel.avatar} {self.stream.title}"
+                "text": f"Data for {self.stream.title}"
             },
             "scales": {
                 "xAxes": [{
