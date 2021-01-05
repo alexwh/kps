@@ -10,6 +10,10 @@ django-chartjs = "*"
 chat-replay-downloader = {editable = true, ref = "package", git = "https://github.com/xenova/chat-replay-downloader"}
 isodate = "*"
 channels = "*"
+google-api-python-client = "*"
+google-auth-oauthlib = "*"
+google-auth-httplib2 = "*"
+django-environ = "*"
 
 [dev-packages]
 
