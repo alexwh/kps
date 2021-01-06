@@ -12,9 +12,6 @@
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7/dist/chartjs-plugin-zoom.min.js" integrity="sha256-6S7w9Wue7EBvlJh/Li/cPecjTNN+yBm/AoCePQA9Xi8=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js" integrity="sha256-eVNjHw5UeU0jUqPPpZHAkU1z4U+QFBBY488WvueTm88=" crossorigin="anonymous"></script>
     <style>
-        #template {
-            display:none;
-        }
         select {
             width: 250px;
             overflow: hidden;
@@ -26,19 +23,13 @@
         <div id="controls">
             <input id="fetch_ytid"></input>
             <button id="fetch_new">fetch</button>
-            <select id="ytid">
-                {% for stream in db_streams %}
-                <option value="{{ stream.stream_id }}">{{ stream.channel.name }} - {{ stream.title }}</option>
-                {% endfor %}
-            </select>
+            <select id="ytid"></select>
             <input id="ignore_prestream" type="checkbox">ignore prestream comments</input>
             <button id="get_the_goods">go</button>
             <div>
                 <button id="add_template">add keyword</button>
                 <button id="remove_template">remove keyword</button>
-                <span id="kw_container">
-                    <input id="template"></input>
-                </span>
+                <span id="kw_container"></span>
             </div>
         </div>
         <div id="charts">
@@ -46,6 +37,19 @@
         </div>
         <script type="text/javascript">
             var mychart;
+            var streams = {};
+            function load_streams() {
+                var dropdown = $("select#ytid");
+                $.getJSON("/streams", function(data) {
+                    //dropdown.children().remove();
+                    $.each(data, function(k, v) {
+                        var option = $("<option></option>");
+                        option.html(v["fields"]["title"]);
+                        option.attr("value", v["pk"]);
+                        dropdown.append(option);
+                    });
+                });
+            }
             $("#get_the_goods").on("click", function(event) {
                 event.preventDefault();
                 var keywords = [];
@@ -64,10 +68,7 @@
             })
             $("#add_template").on("click", function(event) {
                 event.preventDefault();
-                let kw = $("#template").clone();
-                kw.removeAttr("id");
-                kw.addClass("keywords");
-                $("#kw_container").append(kw);
+                $("#kw_container").append('<input class="keywords">');
             })
             $("#remove_template").on("click", function(event) {
                 event.preventDefault();
@@ -88,6 +89,7 @@
                 };
                 $("#fetch_new").html("fetching...");
             })
+            $(document).ready(load_streams);
         </script>
     </body>
 </html>
