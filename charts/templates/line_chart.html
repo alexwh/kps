@@ -77,7 +77,8 @@
             $("#fetch_new").on("click", function(event) {
                 event.preventDefault();
                 fetch_ytid = $("#fetch_ytid").val();
-                var sock = new WebSocket('ws://' + window.location.host + '/ws/fetch/' + fetch_ytid + '/');
+                var proto = location.protocol !== 'https:' ? "ws://" : "wss://";
+                var sock = new WebSocket(proto + window.location.host + '/ws/fetch/' + fetch_ytid + '/');
                 sock.onmessage = function(m) {
                     console.log(m)
                     //if(msg == "done") {
