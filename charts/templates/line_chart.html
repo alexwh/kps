@@ -31,7 +31,7 @@
                 <option value="{{ stream.stream_id }}">{{ stream.channel.name }} - {{ stream.title }}</option>
                 {% endfor %}
             </select>
-            <button id="add_template">add template keyword</button>
+            <input id="ignore_prestream" type="checkbox">ignore prestream comments</input>
             <button id="get_the_goods">go</button>
             <div>
                 <button id="add_template">add keyword</button>
@@ -52,7 +52,7 @@
                 $.each($(".keywords"), function(k, v) {
                     keywords.push(v.value);
                 })
-                $.get('/cinfo/' + $("#ytid").val() + ".json", {"keywords": keywords}, function(resp) {
+                $.get('/cinfo/' + $("#ytid").val() + ".json", {"keywords": keywords, ignoreprestream: $("#ignore_prestream").is(":checked")}, function(resp) {
                     var ctx = $("#myChart").get(0).getContext("2d");
                     if(mychart) {
                         mychart.destroy();

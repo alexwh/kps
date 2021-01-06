@@ -6,10 +6,12 @@ from . import models, util
 class LineChartJSONView(BaseLineOptionsChartView):
     def dispatch(self, request, *args, **kwargs):
         self.stream = get_object_or_404(models.Stream, stream_id=self.kwargs["ytid"])
-        self.comments = self.stream.comments.all()
-        self.start_date = self.comments[0].timestamp.replace(second=0, microsecond=0)
-        self.end_date = self.comments[len(self.comments) - 1].timestamp.replace(second=0, microsecond=0)  # negative index not supported
         self.keywords = self.request.GET.getlist("keywords[]")
+        if self.request.GET.getlist("ignoreprestream") == ["true"]:
+            self.comments = self.stream.comments.exclude(relative_time__startswith="-")
+        else:
+            self.comments = self.stream.comments.all()
+
         first_comment = self.comments[0]
         last_comment = self.comments[len(self.comments) - 1]  # negative index not supported
         self.start_date = first_comment.timestamp.replace(second=0, microsecond=0)
