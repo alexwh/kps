@@ -33,8 +33,12 @@
             </select>
             <button id="add_template">add template keyword</button>
             <button id="get_the_goods">go</button>
-            <div id="kw_container">
-                <input id="template"></input>
+            <div>
+                <button id="add_template">add keyword</button>
+                <button id="remove_template">remove keyword</button>
+                <span id="kw_container">
+                    <input id="template"></input>
+                </span>
             </div>
         </div>
         <div id="charts">
@@ -62,6 +66,10 @@
                 kw.removeAttr("id");
                 kw.addClass("keywords");
                 $("#kw_container").append(kw);
+            })
+            $("#remove_template").on("click", function(event) {
+                event.preventDefault();
+                $("#kw_container").children().last().remove();
             })
             $("#fetch_new").on("click", function(event) {
                 event.preventDefault();
