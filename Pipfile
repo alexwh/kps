@@ -15,6 +15,7 @@ google-auth-oauthlib = "*"
 google-auth-httplib2 = "*"
 django-environ = "*"
 psycopg2 = "*"
+redis = "*"
 
 [dev-packages]
 
