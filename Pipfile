@@ -14,6 +14,7 @@ google-api-python-client = "*"
 google-auth-oauthlib = "*"
 google-auth-httplib2 = "*"
 django-environ = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
