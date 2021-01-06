@@ -14,7 +14,7 @@ class Stream(models.Model):
 
 class StreamComment(models.Model):
     message_id = models.CharField(max_length=100, primary_key=True, unique=True)  # 100ish, should be 82 + 3 for potential doublepad
-    message = models.CharField(max_length=200)
+    message = models.CharField(max_length=350)
 
     stream = models.ForeignKey(Stream, on_delete=models.CASCADE, related_name="comments")
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
