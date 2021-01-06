@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 pipenv run python manage.py migrate
 (pipenv run python manage.py qcluster &
-pipenv run python manage.py runserver 0.0.0.0:8000)
+pipenv run daphne -b 0.0.0.0 -p 8000 kps.asgi:application)
