@@ -45,17 +45,19 @@
             <canvas id="myChart" width="800" height="600"></canvas>
         </div>
         <script type="text/javascript">
+            var mychart;
             $("#get_the_goods").on("click", function(event) {
                 event.preventDefault();
-                keyword_elements = $(".keywords");
                 var keywords = [];
-                $.each(keyword_elements, function(k, v) {
+                $.each($(".keywords"), function(k, v) {
                     keywords.push(v.value);
-                    console.log(k, v);
                 })
                 $.get('/cinfo/' + $("#ytid").val() + ".json", {"keywords": keywords}, function(resp) {
                     var ctx = $("#myChart").get(0).getContext("2d");
-                    new Chart(ctx, {
+                    if(mychart) {
+                        mychart.destroy();
+                    }
+                    mychart = new Chart(ctx, {
                         type: 'line', data: resp.data, options: resp.options
                     });
                 });
