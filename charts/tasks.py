@@ -46,14 +46,18 @@ def fetch_comments_ytid(user, ytid):
     channel_name, channel_avatar = fetch_info("channels", channel_id)
     channel, _ = models.Channel.objects.get_or_create(
         user_id=channel_id,
-        name=channel_name,
-        avatar=channel_avatar)
+        defaults={
+            "name":channel_name,
+            "avatar":channel_avatar
+        })
     stream, created = models.Stream.objects.get_or_create(
         stream_id=ytid,
-        channel=channel,
-        title=title,
-        description=description,
-        thumbnail=thumbnail)
+        defaults={
+            "channel":channel,
+            "title":title,
+            "description":description,
+            "thumbnail":thumbnail
+        })
 
     # bail out early if the stream already exists
     if not created:
@@ -71,12 +75,12 @@ def fetch_comments_ytid(user, ytid):
             # hopefully there should be always at least one object, just get the
             # base url and we can add =s64/=s32 where needed to resize rather than
             # storing all representations of resizes
-            cinfo = {
-                "avatar":  msg["author"]["images"][0]["url"].split("=")[0],
-                "user_id": msg["author"]["id"],
-                "name":    msg["author"]["name"]
-            }
-            msg_channel, _ = models.Channel.objects.get_or_create(**cinfo)
+            msg_channel, _ = models.Channel.objects.get_or_create(
+                user_id=msg["author"]["id"],
+                defaults={
+                    "name": msg["author"]["name"],
+                    "avatar": msg["author"]["images"][0]["url"].split("=")[0]
+                })
             try:
                 comments.append(models.StreamComment(
                     message_id=msg["message_id"],
