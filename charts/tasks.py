@@ -48,12 +48,16 @@ def fetch_comments_ytid(user, ytid):
         user_id=channel_id,
         name=channel_name,
         avatar=channel_avatar)
-    stream, _ = models.Stream.objects.get_or_create(
+    stream, created = models.Stream.objects.get_or_create(
         stream_id=ytid,
         channel=channel,
         title=title,
         description=description,
         thumbnail=thumbnail)
+
+    # bail out early if the stream already exists
+    if not created:
+        return "did not create existing stream"
 
     ytc_dl = chat_replay_downloader.sites.youtube.YouTubeChatDownloader()
     msgs = ytc_dl.get_chat_messages({
