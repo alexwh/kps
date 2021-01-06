@@ -1,6 +1,31 @@
 import datetime
+from string import Template
 
 NULL = "null"
+
+class DeltaTemplate(Template):
+    delimiter = "%"
+
+# code from https://stackoverflow.com/a/30536361/1732223
+def strfdelta(td, fmt):
+    # Get the timedelta’s sign and absolute number of seconds.
+    sign = "-" if td.days < 0 else ""
+    secs = abs(td).total_seconds()
+
+    # Break the seconds into more readable quantities.
+    days, rem = divmod(secs, 86400)  # Seconds per day: 24 * 60 * 60
+    hours, rem = divmod(rem, 3600)  # Seconds per hour: 60 * 60
+    mins, secs = divmod(rem, 60)
+
+    # Format (as per above answers) and return the result string.
+    t = DeltaTemplate(fmt)
+    return t.substitute(
+        s=sign,
+        D="{:d}".format(int(days)),
+        H="{:d}".format(int(hours)),
+        M="{:d}".format(int(mins)),
+        S="{:d}".format(int(secs)),
+    )
 
 def datetime_range(start_date, end_date, inclusive=True):
     """Generate a sequence of datetime.date objects.
@@ -14,8 +39,12 @@ def datetime_range(start_date, end_date, inclusive=True):
     number_of_minutes = int((end_date - start_date).seconds // 60)
     if inclusive:
         number_of_minutes += 1
-    for minutes in range(number_of_minutes):
-        yield start_date + datetime.timedelta(minutes=minutes)
+    if isinstance(start_date, datetime.timedelta) and isinstance(end_date, datetime.timedelta):
+        for minutes in range(number_of_minutes):
+            yield strfdelta(start_date + datetime.timedelta(minutes=minutes), "%s%H h %M m")
+    else:
+        for minutes in range(number_of_minutes):
+            yield start_date + datetime.timedelta(minutes=minutes)
 
 
 def value_or_null(start_date, end_date, queryset, date_attr, value_attr=None, value=None):

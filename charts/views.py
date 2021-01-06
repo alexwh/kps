@@ -10,11 +10,18 @@ class LineChartJSONView(BaseLineOptionsChartView):
         self.start_date = self.comments[0].timestamp.replace(second=0, microsecond=0)
         self.end_date = self.comments[len(self.comments) - 1].timestamp.replace(second=0, microsecond=0)  # negative index not supported
         self.keywords = self.request.GET.getlist("keywords[]")
+        first_comment = self.comments[0]
+        last_comment = self.comments[len(self.comments) - 1]  # negative index not supported
+        self.start_date = first_comment.timestamp.replace(second=0, microsecond=0)
+        self.end_date = last_comment.timestamp.replace(second=0, microsecond=0)  # negative index not supported
+        self.rel_start_time = first_comment.relative_time
+        self.rel_end_time = last_comment.relative_time
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_labels(self):
         """Return labels in 1 minute intervals between the first and last comment"""
-        return [dt for dt in util.datetime_range(self.start_date, self.end_date)]
+        return [dt for dt in util.datetime_range(self.rel_start_time, self.rel_end_time)]
 
     def get_providers(self):
         """Return the overall message rate and any extra search queries"""
@@ -52,13 +59,13 @@ class LineChartJSONView(BaseLineOptionsChartView):
                 "text": f"Data for {self.stream.title}"
             },
             "scales": {
-                "xAxes": [{
-                    "type": "time",
-                    "distribution": "series",
-                    # "time": {
-                    #     "parser": "x"  # Unix ms timestamp
-                    # }
-                }],
+                # "xAxes": [{
+                #     "type": "time",
+                #     "distribution": "series",
+                #     # "time": {
+                #     #     "parser": "x"  # Unix ms timestamp
+                #     # }
+                # }],
                 "yAxes": [{
                     "scaleLabel": {
                         "display": True,
