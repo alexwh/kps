@@ -77,11 +77,16 @@
                 event.preventDefault();
                 fetch_ytid = $("#fetch_ytid").val();
                 var sock = new WebSocket('ws://' + window.location.host + '/ws/fetch/' + fetch_ytid + '/');
-                sock.onmessage = function(m) {console.log(m)};
+                sock.onmessage = function(m) {
+                    console.log(m)
+                    //if(msg == "done") {
+                    //    $("#fetch_new").html("fetched!");
+                    //}
+                };
                 sock.onopen = function(m) {
                     sock.send("gettem");
                 };
-                $("#fetch_new").value("fetching...");
+                $("#fetch_new").html("fetching...");
             })
         </script>
     </body>

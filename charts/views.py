@@ -30,7 +30,8 @@ class LineChartJSONView(BaseLineOptionsChartView):
         providers = ["Overall"]
         if self.keywords:
             for keyword in self.keywords:
-                providers.append(f"Keyword: {keyword}")
+                if keyword:
+                    providers.append(f"Keyword: {keyword}")
         return providers
 
     def get_data(self):
@@ -43,12 +44,13 @@ class LineChartJSONView(BaseLineOptionsChartView):
             )
         ])
         for keyword in self.keywords:
-            data.append([
-                item
-                for item in util.value_or_null(
-                    self.start_date, self.end_date, self.comments, "timestamp", "message", keyword
-                )
-            ])
+            if keyword:
+                data.append([
+                    item
+                    for item in util.value_or_null(
+                        self.start_date, self.end_date, self.comments, "timestamp", "message", keyword
+                    )
+                ])
         return data
 
     def get_options(self):
