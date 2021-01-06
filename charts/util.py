@@ -1,13 +1,9 @@
 import datetime
-from string import Template
 
 NULL = "null"
 
-class DeltaTemplate(Template):
-    delimiter = "%"
-
 # code from https://stackoverflow.com/a/30536361/1732223
-def strfdelta(td, fmt):
+def deltafmt(td):
     # Get the timedelta’s sign and absolute number of seconds.
     sign = "-" if td.days < 0 else ""
     secs = abs(td).total_seconds()
@@ -18,14 +14,7 @@ def strfdelta(td, fmt):
     mins, secs = divmod(rem, 60)
 
     # Format (as per above answers) and return the result string.
-    t = DeltaTemplate(fmt)
-    return t.substitute(
-        s=sign,
-        D="{:d}".format(int(days)),
-        H="{:d}".format(int(hours)),
-        M="{:d}".format(int(mins)),
-        S="{:d}".format(int(secs)),
-    )
+    return f"{sign}{int(hours)}h {int(mins)}m"
 
 def datetime_range(start_date, end_date, inclusive=True):
     """Generate a sequence of datetime.date objects.
@@ -41,7 +30,7 @@ def datetime_range(start_date, end_date, inclusive=True):
         number_of_minutes += 1
     if isinstance(start_date, datetime.timedelta) and isinstance(end_date, datetime.timedelta):
         for minutes in range(number_of_minutes):
-            yield strfdelta(start_date + datetime.timedelta(minutes=minutes), "%s%H h %M m")
+            yield deltafmt(start_date + datetime.timedelta(minutes=minutes))
     else:
         for minutes in range(number_of_minutes):
             yield start_date + datetime.timedelta(minutes=minutes)
@@ -60,10 +49,10 @@ def value_or_null(start_date, end_date, queryset, date_attr, value_attr=None, va
     """
     for new_date in datetime_range(start_date, end_date):
         query = {
-            date_attr + "__year": new_date.year,
-            date_attr + "__month": new_date.month,
-            date_attr + "__day": new_date.day,
-            date_attr + "__hour": new_date.hour,
+            date_attr + "__year":   new_date.year,
+            date_attr + "__month":  new_date.month,
+            date_attr + "__day":    new_date.day,
+            date_attr + "__hour":   new_date.hour,
             date_attr + "__minute": new_date.minute,
         }
         if value_attr and value:
