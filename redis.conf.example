@@ -1,0 +1,4 @@
+port 6379
+protected-mode yes
+timeout 0
+requirepass <changeme>
